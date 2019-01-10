@@ -8,6 +8,8 @@
 		exit();
 	}
 	
+	require_once "connect.php";
+	
 	if(isset($_POST['_komentarz']))
 	{
 		$kom_OK=true;
@@ -20,7 +22,7 @@
 		}
 		else
 		{
-			require_once "connect.php";
+			
 			$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
 			
 			if ($polaczenie->connect_errno!=0)
@@ -31,10 +33,10 @@
 			else
 			{
 				$_login=$_SESSION['login'];
-				//$polaczenie->query("INSERT INTO komentarze VALUES (NULL, '$_login','$kom')");
+				$polaczenie->query("INSERT INTO komentarze VALUES (NULL, '$_login','$kom','8')");
 				
-				$polaczenie->query("SELECT autor, tresc_koment FROM komentarze WHERE autor = '$_login'");
 				
+				$polaczenie->close();
 				
 			}
 			
@@ -97,7 +99,7 @@
 					<div id = "upper"> 
 						<text style="font-size:20px; font-weight: 700;">Medusa</text> </br>
 						Nie patrzcie jej w oczy! </br>
-						Tagi: #draw #medusa #kohinoor #pencils #art #tattoo #szkic #sztuka #meduza #bogini
+						Tagi: #medusa #bogini #goddess
 						
 					</div> 
 				
@@ -125,8 +127,28 @@
 					<div id = "down" >
 						
 						<div class = "k" >
-							Adam:  <br/>
-							Jakis tam sobie tekst komentarza w stylu bardzo ladnie itp!
+							<?php
+								$pol2 = @new mysqli($host, $db_user, $db_password, $db_name);
+		
+								if ($pol2->connect_errno!=0)
+								{
+									echo "Error: ".$pol2->connect_errno;
+									//obsluga bledu polacznia
+								}
+								else
+								{
+									$result = @$pol2->query("SELECT autor,tresc FROM komentarze WHERE id_wpisu = 8");
+									while ($row=mysqli_fetch_array($result,MYSQLI_ASSOC))
+									{
+									$sa_kom = true;
+									 printf ("%s:    %s   <br/>", $row["autor"], $row["tresc"]);	  
+									}
+										
+									$result->free_result();
+
+									$pol2->close();
+								}
+							?>
 						</div>
 						
 					

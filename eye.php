@@ -8,10 +8,14 @@
 		exit();
 	}
 	
+	require_once "connect.php";
+	
+
 	if(isset($_POST['_komentarz']))
 	{
 		$kom_OK=true;
 		$kom = $_POST['_komentarz'];
+		$_SESSION['kom']=$kom;
 		
 		if((strlen($kom)<4) || (strlen($kom)>50))
 		{
@@ -20,7 +24,7 @@
 		}
 		else
 		{
-			require_once "connect.php";
+			
 			$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
 			
 			if ($polaczenie->connect_errno!=0)
@@ -31,11 +35,10 @@
 			else
 			{
 				$_login=$_SESSION['login'];
-				//$polaczenie->query("INSERT INTO komentarze VALUES (NULL, '$_login','$kom')");
-				
-				$polaczenie->query("SELECT autor, tresc_koment FROM komentarze WHERE autor = '$_login'");
+				$polaczenie->query("INSERT INTO komentarze VALUES (NULL, '$_login','$kom','1')");
 				
 				
+				$polaczenie->close();
 			}
 			
 			
@@ -97,7 +100,7 @@
 					<div id = "upper"> 
 						<text style="font-size:20px; font-weight: 700;">Illuminati</text> </br>
 						Po długiej przerwie wena wróciła! </br>
-						Tagi: #draw #drawing #tattooproject #flower #hand #eye #illuminati #pens #flowertattoo
+						Tagi: #illuminati #eye #hand
 						
 					</div> 
 				
@@ -125,9 +128,30 @@
 					<div id = "down" >
 						
 						<div class = "k" >
-							Adam:  <br/>
-							Jakis tam sobie tekst komentarza w stylu bardzo ladnie itp!
+							<?php
+								$pol2 = @new mysqli($host, $db_user, $db_password, $db_name);
+		
+								if ($pol2->connect_errno!=0)
+								{
+									echo "Error: ".$pol2->connect_errno;
+									//obsluga bledu polacznia
+								}
+								else
+								{
+									$result = @$pol2->query("SELECT autor,tresc FROM komentarze WHERE id_wpisu = 1");
+									while ($row=mysqli_fetch_array($result,MYSQLI_ASSOC))
+									{
+									$sa_kom = true;
+									 printf ("%s:    %s   <br/>", $row["autor"], $row["tresc"]);	  
+									}
+										
+									$result->free_result();
+
+									$pol2->close();
+								}
+							?>
 						</div>
+						
 						
 					
 					</div>
