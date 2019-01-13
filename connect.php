@@ -1,9 +1,9 @@
 <?php
 
 	$host = "localhost";
-	$db_user = "root";
-	$db_password = "";
-	$db_name = "blog";
+	$db_user = "id8407192_sz4dus";
+	$db_password = "qwerty123";
+	$db_name = "id8407192_bini";
 
 
 ?>
